@@ -1,0 +1,12 @@
+:80
+
+php_fastcgi redirect_app:9000 {
+    # Relative to the php app's container
+    root /srv/app
+}
+
+rewrite * /index.php?p={path}&q={query}
+
+log {
+    level INFO
+}

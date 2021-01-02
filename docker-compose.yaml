@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  redirect_app:
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./app:/srv/app:ro
+    environment:
+      # Set these in the `.env` file
+      - UA_TRACKING_ID
+      - DEST_LOCATION
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - 8080:80
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      #- ./caddy/data:/data
+      #- ./caddy/config:/config
