@@ -16,8 +16,12 @@ if (empty($id)) {
     throw new Exception('UA_TRACKING_ID is unset.');
 }
 
-$dest = getenv('DEST_LOCATION');
-if (empty($dest)) {
+if (isset($_SERVER['HTTP_MY_DEST_LOCATION'])) {
+    // Set by middleware to control destination
+    $dest = $_SERVER['HTTP_MY_DEST_LOCATION'];
+} else if (getenv('DEST_LOCATION') !== null) {
+    $dest = getenv('DEST_LOCATION');
+} else {
     throw new Exception('DEST_LOCATION is unset.');
 }
 
