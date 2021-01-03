@@ -21,7 +21,15 @@ if (empty($dest)) {
     throw new Exception('DEST_LOCATION is unset.');
 }
 
-if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+// FIXME, traefik ensures `X-Forwarded-For` is valid, but cloudflare only appends to it. So
+// if a client forges a header to cloudflare we should check if remote_addr is
+// equal to cloudflare and then use only `CF-Connecting-IP` header.
+// Checking the IP would be easier in Python with the IPAddress class stuff.
+// https://www.cloudflare.com/{ips-v4,ips-v6}
+if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+    // FIXME missing check to make sure REMOTE_ADD = cloudflare ipset
+    $client_addr = $_SERVER['HTTP_CF_CONNECTING_IP'];
+} else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     $client_addr = trim(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0]);
 } else {
     $client_addr = $_SERVER['REMOTE_ADDR'];
