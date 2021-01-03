@@ -53,6 +53,9 @@ $analytics
     ->setCampaignSource($_SERVER['HTTP_HOST'])
     ->setCampaignContent($url);
 
+if (isset($_SERVER['HTTP_USER_AGENT'])) {
+    $analytics->setUserAgentOverride($_SERVER['HTTP_USER_AGENT']);
+}
 if (isset($_SERVER['HTTP_REFERER'])) {
     $analytics->setDocumentReferrer($_SERVER['HTTP_REFERER']);
 }
