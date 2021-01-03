@@ -21,6 +21,12 @@ if (empty($dest)) {
     throw new Exception('DEST_LOCATION is unset.');
 }
 
+if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $client_addr = trim(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0]);
+} else {
+    $client_addr = $_SERVER['REMOTE_ADDR'];
+}
+
 // Instantiate the Analytics object
 // optionally pass TRUE in the constructor if you want to connect using HTTPS
 $analytics = new Analytics(true);
@@ -33,7 +39,7 @@ $analytics
     ->setClientId(md5($_SERVER['REMOTE_ADDR']))
     ->setDocumentLocationUrl($url)
     ->setDocumentTitle($_SERVER['HTTP_HOST'])
-    ->setIpOverride($_SERVER['REMOTE_ADDR'])
+    ->setIpOverride($client_addr)
     ->setCampaignName('catchall')
     ->setCampaignMedium('redirect')
     ->setCampaignSource($_SERVER['HTTP_HOST'])
